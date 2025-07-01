@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
-	otpdetector "github.com/vincentwang/otp-detector/src/go/detector"
+	detector "github.com/vincentwang/otp-detector/src/go/detector"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func main() {
 	flag.StringVar(&messageFile, "file", "", "消息文件路径")
 	flag.Parse()
 
-	// 如果未指定模型路径，使用默认路径
+	// 如果未指定模型路径，使用SVM模型参数
 	if modelPath == "" {
 		// 获取当前目录
 		currentDir, err := os.Getwd()
@@ -37,8 +37,8 @@ func main() {
 			log.Fatalf("无法获取当前目录: %v", err)
 		}
 
-		// 默认模型路径
-		modelPath = filepath.Join(currentDir, "..", "..", "models", "go_params", "otp_svm_params.json")
+		// SVM模型路径
+		modelPath = filepath.Join(currentDir, "..", "..", "models", "go_params", "otp_svm_improved_params.json")
 	}
 
 	// 检查模型文件是否存在
@@ -47,31 +47,31 @@ func main() {
 	}
 
 	// 创建OTP检测器
-	fmt.Println("正在加载OTP检测模型...")
-	detector, err := otpdetector.NewOTPDetector(modelPath)
+	fmt.Println("正在加载SVM模型...")
+	otpDetector, err := detector.NewOTPDetector(modelPath)
 	if err != nil {
 		log.Fatalf("创建OTP检测器失败: %v", err)
 	}
 
 	// 设置调试模式
-	detector.EnableDebug(debug)
+	otpDetector.EnableDebug(debug)
 
 	// 根据模式执行不同的操作
 	if benchmark {
-		runBenchmark(detector)
+		runBenchmark(otpDetector)
 	} else if messageFile != "" {
-		processMessageFile(detector, messageFile)
+		processMessageFile(otpDetector, messageFile)
 	} else if interactive {
-		runInteractive(detector)
+		runInteractive(otpDetector)
 	} else {
 		// 默认运行示例
-		runExamples(detector)
+		runExamples(otpDetector)
 	}
 }
 
 // 运行示例
-func runExamples(detector *otpdetector.OTPDetector) {
-	fmt.Println("===== 示例消息测试 =====")
+func runExamples(detector *detector.OTPDetector) {
+	fmt.Println("===== 示例消息测试 (SVM模型) =====")
 
 	examples := []struct {
 		Message  string
@@ -93,6 +93,7 @@ func runExamples(detector *otpdetector.OTPDetector) {
 		{"欢迎使用[极速租车]，您的验证码为：855760。", true},
 	}
 
+	correct := 0
 	for i, example := range examples {
 		isOTP, confidence, err := detector.IsOTP(example.Message)
 		if err != nil {
@@ -103,16 +104,20 @@ func runExamples(detector *otpdetector.OTPDetector) {
 		result := "✓ 正确"
 		if isOTP != example.Expected {
 			result = "✗ 错误"
+		} else {
+			correct++
 		}
 
 		fmt.Printf("消息 #%d: %s\n", i+1, example.Message)
 		fmt.Printf("预期: %v, 实际: %v, 置信度: %.4f - %s\n\n", example.Expected, isOTP, confidence, result)
 	}
+
+	fmt.Printf("准确率: %.2f%% (%d/%d)\n", float64(correct)/float64(len(examples))*100, correct, len(examples))
 }
 
 // 交互模式
-func runInteractive(detector *otpdetector.OTPDetector) {
-	fmt.Println("===== 交互模式 =====")
+func runInteractive(detector *detector.OTPDetector) {
+	fmt.Println("===== 交互模式 (SVM模型) =====")
 	fmt.Println("输入消息进行OTP检测，输入'quit'或'exit'退出")
 
 	scanner := bufio.NewScanner(os.Stdin)
@@ -147,8 +152,8 @@ func runInteractive(detector *otpdetector.OTPDetector) {
 }
 
 // 处理消息文件
-func processMessageFile(detector *otpdetector.OTPDetector, filePath string) {
-	fmt.Printf("===== 处理文件: %s =====\n", filePath)
+func processMessageFile(detector *detector.OTPDetector, filePath string) {
+	fmt.Printf("===== 处理文件 (SVM模型): %s =====\n", filePath)
 
 	// 打开文件
 	file, err := os.Open(filePath)
@@ -196,8 +201,8 @@ func processMessageFile(detector *otpdetector.OTPDetector, filePath string) {
 }
 
 // 运行基准测试
-func runBenchmark(detector *otpdetector.OTPDetector) {
-	fmt.Println("===== 基准测试 =====")
+func runBenchmark(detector *detector.OTPDetector) {
+	fmt.Println("===== 基准测试 (SVM模型) =====")
 
 	// 准备测试数据
 	messages := []string{

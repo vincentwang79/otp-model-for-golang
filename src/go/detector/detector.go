@@ -17,6 +17,7 @@ type ModelParams struct {
 	Binary      bool           `json:"binary"`
 	Lowercase   bool           `json:"lowercase"`
 	OTPKeywords []string       `json:"otp_keywords"`
+	ModelType   string         `json:"model_type"`
 }
 
 // OTPDetector 使用机器学习模型检测OTP短信
@@ -31,6 +32,11 @@ func NewOTPDetector(paramsPath string) (*OTPDetector, error) {
 	params, err := loadModelParams(paramsPath)
 	if err != nil {
 		return nil, fmt.Errorf("加载模型参数失败: %w", err)
+	}
+
+	// 验证是否为SVM模型
+	if params.ModelType != "svm" {
+		return nil, fmt.Errorf("不支持的模型类型: %s，目前仅支持SVM模型", params.ModelType)
 	}
 
 	return &OTPDetector{
@@ -75,7 +81,7 @@ func (d *OTPDetector) IsOTP(message string) (bool, float64, error) {
 // preprocessText 预处理文本，提取数字模式和关键词
 func (d *OTPDetector) preprocessText(text string) string {
 	// 清洗文本
-	cleanText := cleanText(text)
+	cleanedText := cleanText(text)
 
 	// 提取数字模式
 	digits := extractDigits(text)
@@ -93,10 +99,10 @@ func (d *OTPDetector) preprocessText(text string) string {
 	}
 
 	// 结合原始文本和提取的模式
-	return cleanText + digitPattern + keywordPattern
+	return cleanedText + digitPattern + keywordPattern
 }
 
-// extractFeatures 从文本中提取特征
+// extractFeatures 从文本中提取TF-IDF特征
 func (d *OTPDetector) extractFeatures(text string) map[int]float64 {
 	// 分词
 	words := strings.Fields(text)
@@ -107,20 +113,28 @@ func (d *OTPDetector) extractFeatures(text string) map[int]float64 {
 		wordCounts[word]++
 	}
 
-	// 提取2-gram特征
+	// 提取2-gram和3-gram特征
 	for i := 0; i < len(words)-1; i++ {
+		// 2-gram
 		bigram := words[i] + " " + words[i+1]
 		wordCounts[bigram]++
+
+		// 3-gram
+		if i < len(words)-2 {
+			trigram := words[i] + " " + words[i+1] + " " + words[i+2]
+			wordCounts[trigram]++
+		}
 	}
 
-	// 创建特征向量
+	// 创建TF-IDF特征向量
 	features := make(map[int]float64)
 	for word, count := range wordCounts {
 		if idx, exists := d.params.Vocabulary[word]; exists {
 			if d.params.Binary {
 				features[idx] = 1.0
 			} else {
-				features[idx] = float64(count)
+				// 使用次线性TF缩放 (1 + log(tf))
+				features[idx] = 1.0 + math.Log(float64(count))
 			}
 		}
 	}

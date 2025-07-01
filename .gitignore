@@ -62,5 +62,5 @@ ENV/
 *~
 
 # Project specific
-/models/
-/data/
+#/models/
+#/data/
