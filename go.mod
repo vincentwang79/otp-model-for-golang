@@ -1,6 +1,6 @@
 module github.com/vincentwang79/otp-model-for-golang
 
-go 1.22.6
+go 1.20
 
 replace github.com/vincentwang79/otp-model-for-golang/detector => ./detector
 
