@@ -39,7 +39,7 @@ SVM+balanced_enhanced模型是我们推荐的最佳选择，因为它：
 
 ```go
 import (
-    detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+    detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 ```
 
@@ -82,7 +82,7 @@ package otpdetection
 import (
     "sync"
     
-    detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+    detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 var (
@@ -113,7 +113,7 @@ import (
     "net/http"
     "strings"
     
-    detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+    detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 var otpDetector *detector.BalancedEnhancedOTPDetector
@@ -197,7 +197,7 @@ package otpprocessor
 import (
     "sync"
     
-    detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+    detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 // Result 表示OTP检测结果
@@ -283,7 +283,7 @@ package otpcache
 import (
     "sync"
     
-    detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+    detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 // CachedDetector 带缓存的OTP检测器

@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
-	detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+	detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 func main() {

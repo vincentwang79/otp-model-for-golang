@@ -18,10 +18,10 @@
 ## 2. Go检测器结构
 
 OTP检测器的Go实现位于以下文件：
-- `src/go/detector/detector_balanced_enhanced.go`: 平衡增强检测器（**推荐使用**）
-- `src/go/detector/detector_improved.go`: 改进的检测器
-- `src/go/detector/detector.go`: 原始检测器
-- `src/go/detector/language_detector.go`: 语言检测器
+- `detector/detector_balanced_enhanced.go`: 平衡增强检测器（**推荐使用**）
+- `detector/detector_improved.go`: 改进的检测器
+- `detector/detector.go`: 原始检测器
+- `detector/language_detector.go`: 语言检测器
 
 主要组件：
 - `BalancedEnhancedOTPDetector`: 平衡增强OTP检测器（**推荐使用**）
@@ -41,7 +41,7 @@ import (
     "fmt"
     "log"
     
-    detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+    detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 func main() {
@@ -115,7 +115,7 @@ detector.EnableDebug(true)
 如果您的应用程序使用Go模块，请将detector包添加为依赖：
 
 ```bash
-go get github.com/vincentwang79/otp-model-for-golang/src/go/detector
+go get github.com/vincentwang79/otp-model-for-golang/detector
 ```
 
 或者直接复制相关文件到您的项目中：
@@ -132,7 +132,7 @@ package otpdetection
 import (
     "sync"
     
-    detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+    detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 var (
@@ -162,7 +162,7 @@ import (
     "log"
     "net/http"
     
-    detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+    detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 var otpDetector *detector.BalancedEnhancedOTPDetector
@@ -257,7 +257,7 @@ package otpprocessor
 import (
     "sync"
     
-    detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+    detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 // Result 表示OTP检测结果

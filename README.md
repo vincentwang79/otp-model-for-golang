@@ -14,10 +14,13 @@ otp-py-train-go-use/
 │       ├── otp_svm_params.json   # 模型参数JSON
 │       ├── otp_svm.joblib        # 原始Python模型
 │       └── processed_examples.txt # 处理后的示例文本
+├── detector/              # Go实现的OTP检测器
+│   ├── detector.go        # 基础检测器实现
+│   ├── detector_improved.go # 改进的检测器实现
+│   ├── detector_enhanced.go # 增强特征检测器
+│   ├── detector_balanced_enhanced.go # 平衡增强检测器
+│   └── language_detector.go # 语言检测器
 ├── src/                   # 源代码
-│   ├── go/                # Go实现
-│   │   └── detector/      # OTP检测器
-│   │       └── detector.go # 检测器实现
 │   └── python/            # Python实现
 │       └── train_export_model.py # 训练和导出模型
 └── test/                  # 测试程序

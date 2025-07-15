@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+	"github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 func main() {

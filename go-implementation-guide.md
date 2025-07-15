@@ -27,7 +27,7 @@ import (
 	"fmt"
 	"log"
 	
-	detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+	detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 func main() {
@@ -94,7 +94,7 @@ import (
 	"log"
 	"os"
 	
-	detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+	detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 func main() {
@@ -161,7 +161,7 @@ import (
 	"path/filepath"
 	"sync"
 	
-	detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+	detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 // 消息处理结果
@@ -283,7 +283,7 @@ import (
 	"os"
 	"path/filepath"
 	
-	detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+	detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )
 
 // 请求结构体
@@ -414,7 +414,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"message":"Your verificati
    import (
        "sync"
        
-       otpdetector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
+       otpdetector "github.com/vincentwang79/otp-model-for-golang/detector"
    )
 
    var (
