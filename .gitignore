@@ -52,6 +52,7 @@ var/
 .installed.cfg
 *.egg
 venv/
+venv_py3/
 ENV/
 
 # IDE files
@@ -64,3 +65,5 @@ ENV/
 # Project specific
 #/models/
 #/data/
+
+sms_results_base.csv

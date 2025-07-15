@@ -13,7 +13,7 @@ The OTP detector is implemented as `OTPDetector` - a high-accuracy detector for 
 Add this repository to your Go project:
 
 ```bash
-go get github.com/vincentwang/otp-detector
+go get github.com/vincentwang79/otp-model-for-golang
 ```
 
 ## Basic Usage
@@ -27,7 +27,7 @@ import (
 	"fmt"
 	"log"
 	
-	detector "github.com/vincentwang/otp-detector/src/go/detector"
+	detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
 )
 
 func main() {
@@ -94,7 +94,7 @@ import (
 	"log"
 	"os"
 	
-	detector "github.com/vincentwang/otp-detector/src/go/detector"
+	detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
 )
 
 func main() {
@@ -161,7 +161,7 @@ import (
 	"path/filepath"
 	"sync"
 	
-	detector "github.com/vincentwang/otp-detector/src/go/detector"
+	detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
 )
 
 // 消息处理结果
@@ -283,7 +283,7 @@ import (
 	"os"
 	"path/filepath"
 	
-	detector "github.com/vincentwang/otp-detector/src/go/detector"
+	detector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
 )
 
 // 请求结构体
@@ -394,10 +394,10 @@ curl -X POST -H "Content-Type: application/json" -d '{"message":"Your verificati
    在您的`go.mod`文件中添加依赖：
 
    ```go
-   require github.com/vincentwang/otp-detector v0.0.0
+   require github.com/vincentwang79/otp-model-for-golang v0.0.0
    
    // 如果您是从本地路径引用
-   replace github.com/vincentwang/otp-detector => /path/to/otp_model_for_golang
+   replace github.com/vincentwang79/otp-model-for-golang => /path/to/otp_model_for_golang
    ```
 
 2. **复制模型参数文件**
@@ -414,7 +414,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"message":"Your verificati
    import (
        "sync"
        
-       otpdetector "github.com/vincentwang/otp-detector/src/go/detector"
+       otpdetector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
    )
 
    var (

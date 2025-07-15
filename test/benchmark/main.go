@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
-	otpdetector "github.com/vincentwang/otp-detector/src/go/detector"
+	otpdetector "github.com/vincentwang79/otp-model-for-golang/src/go/detector"
 )
 
 func main() {

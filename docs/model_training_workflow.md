@@ -30,6 +30,9 @@ source venv/bin/activate
 
 # 安装依赖
 pip install -r requirements.txt
+
+# 安装额外的依赖（用于数据平衡）
+pip install imbalanced-learn
 ```
 
 ## 3. 模型训练
@@ -74,6 +77,44 @@ python src/python/train_improved_model.py --model rf  # 随机森林
 python src/python/train_improved_model.py --data path/to/data.csv --output path/to/output
 ```
 
+### 3.3 平衡数据模型训练
+
+平衡数据训练脚本位置：`src/python/train_balanced_model.py`
+
+该脚本实现了数据平衡策略：
+1. 使用SMOTE过采样技术增加少数类样本
+2. 使用随机欠采样减少多数类样本
+3. 平衡OTP和非OTP短信的比例，改善模型性能
+
+```bash
+# 运行平衡数据训练脚本（默认使用SVM模型和SMOTE平衡）
+python src/python/train_balanced_model.py
+
+# 指定不同的模型类型和平衡方法
+python src/python/train_balanced_model.py --model svm --balance smote
+python src/python/train_balanced_model.py --model nb --balance undersample
+```
+
+### 3.4 平衡增强模型训练（推荐）
+
+平衡增强模型训练脚本位置：`src/python/train_enhanced_balanced_model.py`
+
+该脚本结合了增强特征工程和数据平衡策略：
+1. 实现多语言支持（英文、中文、俄语、爱沙尼亚语）
+2. 优化数字模式识别和关键词权重
+3. 应用SMOTE过采样或随机欠采样平衡数据
+4. 支持多种分类器：SVM、朴素贝叶斯(NB)和随机森林(RF)
+5. 自动优化决策阈值，提高F1分数
+
+```bash
+# 运行平衡增强模型训练脚本（训练所有模型类型和平衡方法组合）
+python src/python/train_enhanced_balanced_model.py
+
+# 指定特定的模型类型和平衡方法
+python src/python/train_enhanced_balanced_model.py --model-types svm,nb --balance-methods smote
+python src/python/train_enhanced_balanced_model.py --model-types rf --balance-methods undersample
+```
+
 ## 4. 模型输出
 
 ### 4.1 原始模型输出
@@ -95,6 +136,23 @@ python src/python/train_improved_model.py --data path/to/data.csv --output path/
 - 朴素贝叶斯: `otp_nb_improved_params.json`, `otp_nb_improved.joblib`
 - 随机森林: `otp_rf_improved_params.json`, `otp_rf_improved.joblib`
 
+### 4.3 平衡数据模型输出
+
+平衡数据训练脚本会输出以下文件：
+- `otp_svm_smote_params.json`: 使用SMOTE平衡的SVM模型参数
+- `otp_svm_undersample_params.json`: 使用欠采样平衡的SVM模型参数
+- `otp_nb_smote_params.json`: 使用SMOTE平衡的朴素贝叶斯模型参数
+- `otp_rf_smote_params.json`: 使用SMOTE平衡的随机森林模型参数
+
+### 4.4 平衡增强模型输出（推荐）
+
+平衡增强模型训练脚本会输出以下文件：
+- `otp_svm_balanced_enhanced_params.json`: 平衡增强SVM模型参数
+- `otp_nb_balanced_enhanced_params.json`: 平衡增强朴素贝叶斯模型参数
+- `otp_rf_balanced_enhanced_params.json`: 平衡增强随机森林模型参数
+- `otp_svm_balanced_enhanced.joblib`: 完整的平衡增强SVM模型
+- `processed_examples_svm_balanced_enhanced.txt`: 处理后的文本示例
+
 ## 5. 模型验证
 
 可以使用验证脚本评估模型性能：
@@ -106,8 +164,11 @@ python src/python/validate_model.py
 # 验证改进的模型
 python src/python/validate_improved_model.py
 
-# 验证特定模型类型
-python src/python/validate_improved_model.py --model svm
+# 验证平衡数据模型
+python src/python/validate_balanced_models.py
+
+# 验证平衡增强模型
+python src/python/validate_enhanced_balanced_models.py
 ```
 
 验证脚本会输出以下指标：
@@ -115,14 +176,31 @@ python src/python/validate_improved_model.py --model svm
 - 精确率（Precision）
 - 召回率（Recall）
 - F1分数
+- AUC值
 - 混淆矩阵
 
 ## 6. 模型测试
 
 可以使用CLI工具测试训练好的模型：
 
+### 6.1 测试原始模型
+
 ```bash
 cd test/cli
+go run main.go
+```
+
+### 6.2 测试改进的模型
+
+```bash
+cd test/cli
+go run main_improved.go
+```
+
+### 6.3 测试平衡增强模型（推荐）
+
+```bash
+cd test/balanced_enhanced_cli
 go run main.go
 ```
 
@@ -133,6 +211,8 @@ CLI工具支持以下模式：
 - 基准测试模式：`go run main.go --benchmark`
 - 调试模式：`go run main.go --debug`
 - 自定义模型：`go run main.go --model path/to/model_params.json`
+- 选择模型类型：`go run main.go --type nb`（支持svm、nb、rf）
+- 选择平衡方法：`go run main.go --balance smote`（支持smote、undersample）
 
 ## 7. 模型改进
 
@@ -158,6 +238,11 @@ CLI工具支持以下模式：
    - 平衡类别分布
    - 增加多语言样本
 
+5. 优化数据平衡策略：
+   - 调整SMOTE过采样参数
+   - 尝试其他平衡方法（如ADASYN、BorderlineSMOTE等）
+   - 结合过采样和欠采样技术
+
 每次改进后，重新运行训练脚本并使用验证脚本评估模型性能。
 
 ## 8. 模型部署
@@ -166,7 +251,21 @@ CLI工具支持以下模式：
 
 1. 复制模型参数文件到应用程序可访问的位置
 2. 在Go应用程序中加载模型参数
-3. 创建OTP检测器实例
+3. 创建相应的OTP检测器实例
 4. 使用检测器处理消息
 
-详细的部署指南请参考 `go_model_usage_guide.md`。 
+详细的部署指南请参考 `go_model_usage_guide.md`。
+
+## 9. 模型性能比较
+
+| 模型 | 平衡方法 | 准确率 | 精确率 | 召回率 | F1分数 | AUC |
+|------|---------|-------|-------|-------|-------|-----|
+| SVM  | balanced_enhanced | 0.90 | 0.86 | 0.83 | 0.8539 | 0.89 |
+| NB   | balanced_enhanced | 0.90 | 0.88 | 0.81 | 0.8433 | 0.91 |
+| RF   | balanced_enhanced | 0.88 | 0.81 | 0.84 | 0.8421 | 0.90 |
+| NB   | smote | 0.9014 | 0.9140 | 0.7735 | 0.8379 | 0.9139 |
+| SVM  | undersample | 0.8002 | 0.6412 | 0.8934 | 0.7465 | 0.8853 |
+| SVM  | smote | 0.7643 | 0.6072 | 0.8049 | 0.6922 | 0.8420 |
+| RF   | smote | 0.7785 | 0.9053 | 0.3657 | 0.5210 | 0.9183 |
+
+**推荐模型**：SVM + balanced_enhanced (F1分数最高) 

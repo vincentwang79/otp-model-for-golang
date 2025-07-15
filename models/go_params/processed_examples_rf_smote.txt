@@ -1,0 +1,60 @@
+示例 1:
+whom you waited for yesterday LANG_en
+
+示例 2:
+874007 is your otp to log in DIGIT_PATTERN_has_6_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_medium_percentage KEYWORD_otp KEYWORD_otp KEYWORD_otp KEYWORD_otp KEYWORD_otp LANG_en
+
+示例 3:
+use 594458 to verify your account DIGIT_PATTERN_has_6_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_medium_percentage KEYWORD_verify KEYWORD_verify KEYWORD_verify KEYWORD_verify LANG_en
+
+示例 4:
+win a new iphone by entering code 418149 here DIGIT_PATTERN_has_6_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_medium_percentage KEYWORD_code KEYWORD_code KEYWORD_code LANG_en
+
+示例 5:
+408095 is your otp to log in DIGIT_PATTERN_has_6_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_medium_percentage KEYWORD_otp KEYWORD_otp KEYWORD_otp KEYWORD_otp KEYWORD_otp LANG_en
+
+示例 6:
+hi customer loyalty offer the new nokia6650 mobile from only £10 at txtauction txt word start to no 81151 get yours now 4t ctxt tc 150p mtmsg DIGIT_PATTERN_has_5_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_has_digits_after_colon DIGIT_PATTERN_has_digits_with_prefix DIGIT_PATTERN_medium_percentage LANG_en
+
+示例 7:
+your verification code is 816106 DIGIT_PATTERN_has_6_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_medium_percentage KEYWORD_verification KEYWORD_verification KEYWORD_verification KEYWORD_verification KEYWORD_code KEYWORD_code KEYWORD_code LANG_en
+
+示例 8:
+954239 is your otp to log in DIGIT_PATTERN_has_6_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_medium_percentage KEYWORD_otp KEYWORD_otp KEYWORD_otp KEYWORD_otp KEYWORD_otp LANG_en
+
+示例 9:
+your verification code is 762319 DIGIT_PATTERN_has_6_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_medium_percentage KEYWORD_verification KEYWORD_verification KEYWORD_verification KEYWORD_verification KEYWORD_code KEYWORD_code KEYWORD_code LANG_en
+
+示例 10:
+please call our customer service representative on freephone 0808 145 4742 between 9am 11pm as you have won a guaranteed £1000 cash or £5000 prize DIGIT_PATTERN_has_4_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_has_digits_with_separator DIGIT_PATTERN_medium_percentage LANG_en
+
+示例 11:
+match started india lt gt for 2 DIGIT_PATTERN_low_percentage LANG_en
+
+示例 12:
+security code 691267 do not share DIGIT_PATTERN_has_6_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_has_digits_after_colon DIGIT_PATTERN_medium_percentage KEYWORD_code KEYWORD_code KEYWORD_code KEYWORD_security KEYWORD_security LANG_en
+
+示例 13:
+boy i love u grl hogolo boy gold chain kodstini grl agalla boy necklace madstini grl agalla boy hogli 1 mutai eerulli kodthini grl i love u kano DIGIT_PATTERN_low_percentage LANG_other
+
+示例 14:
+haha just what i was thinkin LANG_en
+
+示例 15:
+use 786676 to verify your account DIGIT_PATTERN_has_6_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_medium_percentage KEYWORD_verify KEYWORD_verify KEYWORD_verify KEYWORD_verify LANG_en
+
+示例 16:
+hello my boytoy i made it home and my constant thought is of you my love i hope your having a nice visit but i can t wait till you come home to me kiss LANG_en
+
+示例 17:
+947562 is your otp to log in DIGIT_PATTERN_has_6_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_medium_percentage KEYWORD_otp KEYWORD_otp KEYWORD_otp KEYWORD_otp KEYWORD_otp LANG_en
+
+示例 18:
+i have printed it oh so lt gt come upstairs LANG_en
+
+示例 19:
+use 667646 to verify your account DIGIT_PATTERN_has_6_digits DIGIT_PATTERN_has_consecutive_digits DIGIT_PATTERN_medium_percentage KEYWORD_verify KEYWORD_verify KEYWORD_verify KEYWORD_verify LANG_en
+
+示例 20:
+thanks for ve lovely wisheds you rock LANG_en
+
