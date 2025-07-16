@@ -119,8 +119,8 @@ go get github.com/vincentwang79/otp-model-for-golang/detector
 ```
 
 或者直接复制相关文件到您的项目中：
-- `src/go/detector/detector_balanced_enhanced.go`
-- `src/go/detector/language_detector.go`
+- `detector/detector_balanced_enhanced.go`
+- `detector/language_detector.go`
 
 ### 4.2 单例模式初始化检测器
 
@@ -161,6 +161,7 @@ import (
     "encoding/json"
     "log"
     "net/http"
+    "strings"
     
     detector "github.com/vincentwang79/otp-model-for-golang/detector"
 )

@@ -4,9 +4,12 @@ This guide explains how to use the OTP (One-Time Password) detector in your Go a
 
 ## Overview
 
-The OTP detector is a machine learning-based tool that can identify whether a text message contains a one-time password (OTP). The detector is implemented in Go and uses model parameters exported from a Python-trained SVM model.
+The OTP detector is a machine learning-based tool that can identify whether a text message contains a one-time password (OTP). The detector is implemented in Go and uses model parameters exported from a Python-trained model.
 
-The OTP detector is implemented as `OTPDetector` - a high-accuracy detector for identifying OTP messages.
+The OTP detector has several implementations:
+- `BalancedEnhancedOTPDetector` - The recommended detector with balanced data and enhanced features (recommended)
+- `ImprovedOTPDetector` - An improved version of the basic detector
+- `OTPDetector` - The basic implementation
 
 ## Installation
 
@@ -18,7 +21,7 @@ go get github.com/vincentwang79/otp-model-for-golang
 
 ## Basic Usage
 
-Here's a simple example of how to use the OTP detector in your Go code:
+Here's a simple example of how to use the recommended OTP detector in your Go code:
 
 ```go
 package main
@@ -31,25 +34,27 @@ import (
 )
 
 func main() {
-	// Create a new OTP detector
-	otpDetector, err := detector.NewOTPDetector("path/to/otp_svm_improved_params.json")
+	// Create a new balanced enhanced OTP detector (recommended)
+	balancedEnhancedDetector, err := detector.NewBalancedEnhancedOTPDetector("models/go_params/otp_svm_balanced_enhanced_params.json")
 	if err != nil {
 		log.Fatalf("Failed to create OTP detector: %v", err)
 	}
 	
 	// Enable debug mode (optional)
-	otpDetector.EnableDebug(true)
+	balancedEnhancedDetector.EnableDebug(true)
 	
 	// Example message
 	message := "Your verification code is 123456. Please enter it to complete the login."
 	
 	// Check if the message is an OTP
-	isOTP, confidence, err := otpDetector.IsOTP(message)
-	if err != nil {
-		log.Fatalf("Detection failed: %v", err)
-	}
+	isOTP := balancedEnhancedDetector.IsOTP(message)
 	
-	fmt.Printf("Is OTP: %v, Confidence: %.4f\n", isOTP, confidence)
+	fmt.Printf("Message: %s\n", message)
+	fmt.Printf("Is OTP: %v\n", isOTP)
+	
+	// If you need more detailed information, you can use the GetOTPScore method
+	score, debugInfo := balancedEnhancedDetector.GetOTPScore(message)
+	fmt.Printf("OTP Score: %.4f (Threshold: %.4f)\n", score, balancedEnhancedDetector.GetDecisionThreshold())
 }
 ```
 
@@ -57,14 +62,51 @@ func main() {
 
 The repository includes pre-trained model parameter files in the `models/go_params/` directory:
 
-- `otp_svm_improved_params.json` - Parameters for the detector (推荐)
-- `otp_tfidf_svm_improved_params.json` - Parameters for the detector with TF-IDF features
+- `otp_svm_balanced_enhanced_params.json` - Parameters for the balanced enhanced detector (recommended)
+- `otp_nb_balanced_enhanced_params.json` - Parameters for the balanced enhanced detector with Naive Bayes
+- `otp_svm_improved_params.json` - Parameters for the improved detector
+- `otp_tfidf_svm_improved_params.json` - Parameters for the improved detector with TF-IDF features
 
 默认情况下，模型参数文件位于项目根目录的 `models/go_params/` 目录中。如果您使用 `go get` 安装了这个包，模型参数文件会位于 Go 模块缓存中，您需要指定完整路径或将模型参数文件复制到您的项目中。
 
 ## API Reference
 
-### OTPDetector
+### BalancedEnhancedOTPDetector (Recommended)
+
+```go
+// Create a new balanced enhanced OTP detector
+func NewBalancedEnhancedOTPDetector(paramsPath string) (*BalancedEnhancedOTPDetector, error)
+
+// Enable or disable debug mode
+func (d *BalancedEnhancedOTPDetector) EnableDebug(enable bool)
+
+// Check if a message is an OTP
+func (d *BalancedEnhancedOTPDetector) IsOTP(message string) bool
+
+// Get the OTP score and debug information
+func (d *BalancedEnhancedOTPDetector) GetOTPScore(message string) (float64, map[string]interface{})
+
+// Get the decision threshold
+func (d *BalancedEnhancedOTPDetector) GetDecisionThreshold() float64
+```
+
+### ImprovedOTPDetector
+
+```go
+// Create a new improved OTP detector
+func NewImprovedOTPDetector(paramsPath string) (*ImprovedOTPDetector, error)
+
+// Enable or disable debug mode
+func (d *ImprovedOTPDetector) EnableDebug(enable bool)
+
+// Check if a message is an OTP
+func (d *ImprovedOTPDetector) IsOTP(message string) bool
+
+// Get the OTP score and debug information
+func (d *ImprovedOTPDetector) GetOTPScore(message string) (float64, map[string]interface{})
+```
+
+### OTPDetector (Basic)
 
 ```go
 // Create a new OTP detector
@@ -74,11 +116,10 @@ func NewOTPDetector(paramsPath string) (*OTPDetector, error)
 func (d *OTPDetector) EnableDebug(enable bool)
 
 // Check if a message is an OTP
-// Returns:
-// - isOTP: true if the message is an OTP, false otherwise
-// - confidence: a value between 0 and 1 indicating the confidence level
-// - error: any error that occurred during detection
-func (d *OTPDetector) IsOTP(message string) (bool, float64, error)
+func (d *OTPDetector) IsOTP(message string) bool
+
+// Get the OTP score and debug information
+func (d *OTPDetector) GetOTPScore(message string) (float64, map[string]interface{})
 ```
 
 ## Processing Multiple Messages
@@ -99,7 +140,7 @@ import (
 
 func main() {
 	// Create a new detector
-	otpDetector, err := detector.NewOTPDetector("path/to/otp_svm_improved_params.json")
+	otpDetector, err := detector.NewBalancedEnhancedOTPDetector("models/go_params/otp_svm_balanced_enhanced_params.json")
 	if err != nil {
 		log.Fatalf("Failed to create detector: %v", err)
 	}
@@ -120,14 +161,11 @@ func main() {
 			continue
 		}
 		
-		isOTP, confidence, err := otpDetector.IsOTP(message)
-		if err != nil {
-			fmt.Printf("Detection failed: %v\n", err)
-			continue
-		}
+		isOTP := otpDetector.IsOTP(message)
+		score, _ := otpDetector.GetOTPScore(message)
 		
 		fmt.Printf("Message: %s\n", message)
-		fmt.Printf("Is OTP: %v, Confidence: %.4f\n\n", isOTP, confidence)
+		fmt.Printf("Is OTP: %v, Score: %.4f\n\n", isOTP, score)
 	}
 	
 	if err := scanner.Err(); err != nil {
@@ -145,7 +183,7 @@ The OTP detector is designed to be very efficient:
 For high-throughput applications, consider:
 1. Using goroutines to process messages in parallel
 2. Pre-loading the detector in memory
-3. Using the improved detector for better accuracy
+3. Using the balanced enhanced detector for better accuracy
 
 ### 高并发处理示例
 
@@ -166,10 +204,9 @@ import (
 
 // 消息处理结果
 type Result struct {
-	Message    string
-	IsOTP      bool
-	Confidence float64
-	Error      error
+	Message string
+	IsOTP   bool
+	Score   float64
 }
 
 func main() {
@@ -180,11 +217,11 @@ func main() {
 	}
 	
 	// 模型参数文件路径
-	modelPath := filepath.Join(currentDir, "models", "go_params", "otp_svm_improved_params.json")
+	modelPath := filepath.Join(currentDir, "models", "go_params", "otp_svm_balanced_enhanced_params.json")
 	
 	// 创建OTP检测器
 	log.Println("正在加载OTP检测模型...")
-	otpDetector, err := detector.NewOTPDetector(modelPath)
+	otpDetector, err := detector.NewBalancedEnhancedOTPDetector(modelPath)
 	if err != nil {
 		log.Fatalf("创建OTP检测器失败: %v", err)
 	}
@@ -202,17 +239,13 @@ func main() {
 	
 	// 处理结果
 	for _, result := range results {
-		if result.Error != nil {
-			fmt.Printf("错误: %v\n", result.Error)
-			continue
-		}
 		fmt.Printf("消息: %s\n", result.Message)
-		fmt.Printf("是否为OTP: %v, 置信度: %.4f\n\n", result.IsOTP, result.Confidence)
+		fmt.Printf("是否为OTP: %v, 分数: %.4f\n\n", result.IsOTP, result.Score)
 	}
 }
 
 // 并发处理消息
-func processMessagesInParallel(detector *detector.ImprovedOTPDetector, messages []string, workerCount int) []Result {
+func processMessagesInParallel(detector *detector.BalancedEnhancedOTPDetector, messages []string, workerCount int) []Result {
 	var wg sync.WaitGroup
 	
 	// 创建工作通道
@@ -245,16 +278,16 @@ func processMessagesInParallel(detector *detector.ImprovedOTPDetector, messages 
 }
 
 // 工作协程
-func worker(detector *detector.OTPDetector, jobs <-chan string, results chan<- Result, wg *sync.WaitGroup) {
+func worker(detector *detector.BalancedEnhancedOTPDetector, jobs <-chan string, results chan<- Result, wg *sync.WaitGroup) {
 	defer wg.Done()
 	
 	for message := range jobs {
-		isOTP, confidence, err := detector.IsOTP(message)
+		isOTP := detector.IsOTP(message)
+		score, _ := detector.GetOTPScore(message)
 		results <- Result{
-			Message:    message,
-			IsOTP:      isOTP,
-			Confidence: confidence,
-			Error:      err,
+			Message: message,
+			IsOTP:   isOTP,
+			Score:   score,
 		}
 	}
 }
@@ -265,7 +298,7 @@ func worker(detector *detector.OTPDetector, jobs <-chan string, results chan<- R
 Common issues:
 
 1. **Model file not found**: Ensure the path to the model parameter file is correct
-2. **Unsupported model type**: The detector only supports SVM models
+2. **Unsupported model type**: The detector only supports SVM and NB models as specified in the model parameters
 3. **Low confidence scores**: Make sure you're using the latest model parameters
 
 ## 完整Web服务示例
@@ -293,12 +326,12 @@ type DetectionRequest struct {
 
 // 响应结构体
 type DetectionResponse struct {
-	IsOTP      bool    `json:"is_otp"`
-	Confidence float64 `json:"confidence"`
-	Message    string  `json:"message,omitempty"`
+	IsOTP  bool    `json:"is_otp"`
+	Score  float64 `json:"score"`
+	Lang   string  `json:"lang,omitempty"`
 }
 
-var otpDetector *detector.OTPDetector
+var otpDetector *detector.BalancedEnhancedOTPDetector
 
 func main() {
 	// 获取当前目录
@@ -308,7 +341,7 @@ func main() {
 	}
 	
 	// 模型参数文件路径
-	modelPath := filepath.Join(currentDir, "models", "go_params", "otp_svm_improved_params.json")
+	modelPath := filepath.Join(currentDir, "models", "go_params", "otp_svm_balanced_enhanced_params.json")
 	
 	// 检查模型文件是否存在
 	if _, err := os.Stat(modelPath); os.IsNotExist(err) {
@@ -317,7 +350,7 @@ func main() {
 	
 	// 创建OTP检测器
 	log.Println("正在加载OTP检测模型...")
-	otpDetector, err = detector.NewImprovedOTPDetector(modelPath)
+	otpDetector, err = detector.NewBalancedEnhancedOTPDetector(modelPath)
 	if err != nil {
 		log.Fatalf("创建OTP检测器失败: %v", err)
 	}
@@ -355,21 +388,40 @@ func handleDetection(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	// 检测OTP
-	isOTP, confidence, err := otpDetector.IsOTP(req.Message)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("检测失败: %v", err), http.StatusInternalServerError)
-		return
-	}
+	isOTP := otpDetector.IsOTP(req.Message)
+	score, debugInfo := otpDetector.GetOTPScore(req.Message)
 	
 	// 构建响应
 	resp := DetectionResponse{
-		IsOTP:      isOTP,
-		Confidence: confidence,
+		IsOTP: isOTP,
+		Score: score,
+	}
+	
+	// 从处理后的文本中提取语言标记
+	if processedText, ok := debugInfo["processed_text"].(string); ok {
+		if lang, found := extractLang(processedText); found {
+			resp.Lang = lang
+		}
 	}
 	
 	// 返回JSON响应
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(resp)
+}
+
+// extractLang 从处理后的文本中提取语言标记
+func extractLang(text string) (string, bool) {
+	// 在处理后的文本中查找LANG_标记
+	if strings.Contains(text, "LANG_zh") {
+		return "zh", true
+	} else if strings.Contains(text, "LANG_en") {
+		return "en", true
+	} else if strings.Contains(text, "LANG_ru") {
+		return "ru", true
+	} else if strings.Contains(text, "LANG_et") {
+		return "et", true
+	}
+	return "unknown", false
 }
 
 // 健康检查端点
@@ -402,7 +454,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"message":"Your verificati
 
 2. **复制模型参数文件**
 
-   将`models/go_params/otp_svm_improved_params.json`文件复制到您项目的适当位置。
+   将`models/go_params/otp_svm_balanced_enhanced_params.json`文件复制到您项目的适当位置。
 
 3. **创建检测器单例**
 
@@ -418,16 +470,16 @@ curl -X POST -H "Content-Type: application/json" -d '{"message":"Your verificati
    )
 
    var (
-       instance *otpdetector.OTPDetector
+       instance *otpdetector.BalancedEnhancedOTPDetector
        once     sync.Once
        initErr  error
    )
 
    // GetOTPDetector 返回OTP检测器的单例实例
-   func GetOTPDetector(modelPath string) (*otpdetector.OTPDetector, error) {
-               once.Do(func() {
-            instance, initErr = otpdetector.NewOTPDetector(modelPath)
-        })
+   func GetOTPDetector(modelPath string) (*otpdetector.BalancedEnhancedOTPDetector, error) {
+       once.Do(func() {
+           instance, initErr = otpdetector.NewBalancedEnhancedOTPDetector(modelPath)
+       })
        return instance, initErr
    }
    ```
@@ -442,17 +494,18 @@ curl -X POST -H "Content-Type: application/json" -d '{"message":"Your verificati
    }
    
    // 检测消息
-   isOTP, confidence, err := detector.IsOTP(message)
+   isOTP := detector.IsOTP(message)
+   score, _ := detector.GetOTPScore(message)
    ```
 
 ## 总结
 
 OTP检测器是一个高性能、易于集成的Go库，可用于检测文本消息中是否包含一次性密码(OTP)。主要特点包括：
 
-- 高准确率：基于机器学习模型，准确率接近100%
+- 高准确率：基于机器学习模型，准确率接近90%
 - 高性能：每秒可处理约10万条消息
 - 易于集成：简单的API，只需几行代码即可使用
-- 支持多语言：可以检测英文、中文等多种语言的OTP消息
+- 支持多语言：可以检测英文、中文、俄语和爱沙尼亚语的OTP消息
 
 通过本指南，您应该能够轻松地在您的Go应用程序中集成OTP检测功能。
 
@@ -461,9 +514,9 @@ OTP检测器是一个高性能、易于集成的Go库，可用于检测文本消
 If you're a language model like Claude-3.7 working with this code:
 
 1. The detector is implemented in the `detector` package
-2. The main type is `OTPDetector`
+2. The recommended type is `BalancedEnhancedOTPDetector`
 3. The detector uses the `IsOTP` method to check if a message contains an OTP
 4. The model parameters are stored in JSON files
 5. The model works by extracting text features, including n-grams, digit patterns, and OTP keywords
-6. The detector uses a linear SVM model with parameters exported from Python
+6. The detector supports SVM and Naive Bayes models with parameters exported from Python
 7. The detector is thread-safe and can be used in concurrent environments

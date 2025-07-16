@@ -142,6 +142,11 @@ func (d *BalancedEnhancedOTPDetector) EnableDebug(enable bool) {
 	d.debug = enable
 }
 
+// GetDecisionThreshold 返回决策阈值
+func (d *BalancedEnhancedOTPDetector) GetDecisionThreshold() float64 {
+	return d.decisionThreshold
+}
+
 // initEnhancedFeatures 初始化增强特征工程组件
 func (d *BalancedEnhancedOTPDetector) initEnhancedFeatures() {
 	// 初始化语言检测器
