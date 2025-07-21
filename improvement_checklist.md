@@ -10,7 +10,7 @@
 - [x] 增强数字模式识别特征
 - [x] 调整OTP关键词列表及其权重
 - [x] 为中文短信添加专门的特征提取
-- [ ] 考虑使用词嵌入(Word Embeddings)替代TF-IDF
+- [x] 考虑使用词嵌入(Word Embeddings)替代TF-IDF
 - [x] 优化n-gram特征的选择
 
 ## 模型参数调整

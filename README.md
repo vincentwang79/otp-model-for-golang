@@ -166,3 +166,26 @@ python3 scripts/process_datasets.py
 - 验证集: 1,558 (10.0%)
   - OTP短信: 1,000
   - 非OTP短信: 558 # otp_model_for_golang
+
+## 检测器类型
+
+本项目实现了多种OTP短信检测器：
+
+1. **基础检测器** - 基于TF-IDF特征的SVM模型
+2. **改进检测器** - 增强了特征工程的检测器
+3. **平衡增强检测器** - 结合了数据平衡和增强特征工程的检测器
+4. **词嵌入检测器** - 基于词嵌入(Word Embeddings)的检测器，具有更好的语义理解能力和多语言支持
+
+## 词嵌入检测器
+
+词嵌入检测器是本项目的最新实现，它使用词嵌入替代传统的TF-IDF特征，具有以下优势：
+
+- **更好的语义理解** - 能够捕捉词之间的语义关系
+- **多语言支持** - 对中文、俄语、爱沙尼亚语等多种语言有更好的支持
+- **更高的性能** - 基准测试显示比现有检测器快约2.6倍
+
+详细文档请参阅：
+
+- [词嵌入检测器使用指南](docs/word_embeddings/word_embeddings_guide.md)
+- [词嵌入模型性能评估](docs/word_embeddings/word_embeddings_performance.md)
+- [词嵌入基准测试结果](docs/word_embeddings/word_embedding_benchmark_results.md)
